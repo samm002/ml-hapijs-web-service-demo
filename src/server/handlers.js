@@ -13,7 +13,7 @@ async function postPredictHandler(request, h) {
 
   const data = {
     id,
-    result,
+    result: label,
     explanation,
     suggestion,
     confidenceScore,
@@ -24,7 +24,7 @@ async function postPredictHandler(request, h) {
     status: 'success',
     message:
       confidenceScore > 99
-        ? 'Model predicted successfully'
+        ? 'Model is predicted successfully.'
         : 'Model is predicted successfully but under threshold. Please use the correct picture',
     data,
   });

@@ -3,8 +3,9 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const routes = require('../server/routes');
 const loadModel = require('../services/loadModel');
+const InputError = require('../exceptions/InputError');
 
-async () => {
+(async () => {
   const server = Hapi.server({
     port: 3000,
     host: 'localhost',
@@ -14,7 +15,7 @@ async () => {
       },
     },
   });
-  
+
   const model = await loadModel();
   server.app.model = model; // store model dalam run time (dapat diakses dimanapun dalam server) untuk meminimalkan interaksi dengan bucket (mengurangi latensi dan cost untuk bucket)
 
@@ -42,12 +43,15 @@ async () => {
 
     if (response.isBoom) {
       // bernilai true ketika ada error dari server
+
+      const statusCode = response.output ? response.output.statusCode : 500;
+
       const newResponse = h.response({
         status: 'fail',
         message: response.message,
       });
 
-      newResponse.code(response.statusCode);
+      newResponse.code(statusCode);
 
       return newResponse;
     }
@@ -55,8 +59,7 @@ async () => {
     return h.continue; // melanjutkan request jika tidak terjadi error
   });
 
-
   await server.start();
 
   console.log(`Server start at: ${server.info.uri}`);
-};
+})();
