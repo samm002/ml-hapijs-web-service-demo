@@ -8,7 +8,7 @@ const db = new Firestore();
 const predictionCollection = db.collection('predictions');
 
 const createPrediction = async (
-  label,
+  result,
   confidenceScore,
   explanation,
   suggestion
@@ -18,7 +18,7 @@ const createPrediction = async (
 
   await predictionCollection
     .doc(id)
-    .set({ id, label, confidenceScore, explanation, suggestion, createdAt });
+    .set({ id, result, confidenceScore, explanation, suggestion, createdAt });
 
   return { id, createdAt: formatDate(createdAt) };
 };

@@ -46,7 +46,7 @@ const predict = async (model, image) => {
       break;
   }
 
-  return { label, confidenceScore, explanation, suggestion };
+  return { result: label, confidenceScore, explanation, suggestion };
 };
 
 module.exports = { predict };

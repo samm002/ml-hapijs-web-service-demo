@@ -26,11 +26,11 @@ const predict = async (req, res, next) => {
       throw new Error('Please insert image!');
     }
 
-    const { label, confidenceScore, explanation, suggestion } =
+    const { result, confidenceScore, explanation, suggestion } =
       await predictionService.predict(model, image.buffer);
 
     const { id, createdAt } = await dataService.createPrediction(
-      label,
+      result,
       confidenceScore,
       explanation,
       suggestion
@@ -38,10 +38,13 @@ const predict = async (req, res, next) => {
 
     return res.status(201).json({
       status: 'success',
-      message: 'Model is predicted successfully',
+      message:
+        confidenceScore > 99
+          ? 'Model is predicted successfully.'
+          : 'Model is predicted successfully but under threshold. Please use the correct picture',
       data: {
         id,
-        result: label,
+        result,
         confidenceScore,
         explanation,
         suggestion,
